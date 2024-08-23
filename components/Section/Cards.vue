@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import gsap from 'gsap'
+import { gsap, ScrollTrigger } from 'gsap/all'
 
 const list = [
   {
@@ -25,25 +25,14 @@ const list = [
 ]
 
 onMounted(() => {
-  const config = { threshold: 0 }
-
-  let observer = new IntersectionObserver(function (entries, self) {
-    let targets = entries.map((entry) => {
-      if (entry.isIntersecting) {
-        self.unobserve(entry.target)
-        return entry.target
-      }
-    })
-
-    gsap.from(targets, {
-      opacity: 0,
-      y: 100,
-      stagger: 0.1,
-    })
-  }, config)
-
-  document.querySelectorAll('.card').forEach((card) => {
-    observer.observe(card)
+  ScrollTrigger.batch('.card', {
+    onEnter: (elements) => {
+      gsap.from(elements, {
+        opacity: 0,
+        y: 100,
+        stagger: 0.1,
+      })
+    },
   })
 })
 </script>
