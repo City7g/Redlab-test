@@ -28,6 +28,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', togglePaintHeader))
   <header class="header" :class="{ shadow: isPaintHeader }">
     <Logo class="header__logo" />
 
+    <Tabs />
+
     <nav class="header__nav" :class="{ show: isMenuOpen }">
       <ul class="header__nav-list">
         <li v-for="link in links" :key="link" class="header__nav-item">
@@ -108,10 +110,15 @@ onBeforeUnmount(() => window.removeEventListener('scroll', togglePaintHeader))
 
 .header__nav-list {
   display: flex;
-  gap: 32px;
+  gap: 16px;
 
   @media (max-width: 1199px) {
     flex-direction: column;
+    gap: 32px;
+  }
+
+  @media (min-width: 1440px) {
+    gap: 32px;
   }
 }
 
@@ -129,6 +136,10 @@ onBeforeUnmount(() => window.removeEventListener('scroll', togglePaintHeader))
 
   @media (min-width: 1200px) {
     display: flex;
+    gap: 8px;
+  }
+
+  @media (min-width: 1440px) {
     gap: 12px;
   }
 }
