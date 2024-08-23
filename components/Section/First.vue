@@ -1,7 +1,7 @@
 <template>
   <section class="s-base">
     <div class="s-base__image">
-      <img src="@/assets/images/first.png" alt="" class="s-base__img" />
+      <img src="/images/first.png" alt="" class="s-base__img" />
     </div>
 
     <div class="s-base__content">
