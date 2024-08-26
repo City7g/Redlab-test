@@ -94,68 +94,70 @@ const list = [
 
 const startAnim = () => {
   const mapSection = document.querySelector('.map')
-  const image = document.querySelector('.map__image')
+  const image = document.querySelector('.map__images')
 
-  // Flip.fit('.map__images', '.map__image', {
-  //   scale: true,
-  //   fitChild: '.map__img1',
-  // })
-
-  const state = Flip.getState(image)
+  const state = Flip.getState('.map__image')
 
   mapSection?.classList.add('fixed')
 
-  Flip.from(state, {
+  document.querySelector('.map__image')?.append('map__images')
+
+  // Flip.fit('.map__img1', '.map__image img', {
+  //   scale: true,
+  // })
+
+  Flip.to(state, {
+    // targets: '.map__img1',
     duration: 0.5,
     scale: true,
   })
-    .fromTo(
-      '.map__content',
-      {
-        xPe: -100,
-      },
-      {
-        xPercent: 0,
-        delay: 0.3,
-      }
-    )
-    .fromTo(
-      '.map__link',
-      {
-        opacity: 0,
-        x: -40,
-      },
-      {
-        opacity: 1,
-        x: 0,
-        stagger: 0.1,
-        clearProps: 'all',
-      }
-    )
+  // .fromTo(
+  //   '.map__content',
+  //   {
+  //     xPercent: -100,
+  //   },
+  //   {
+  //     xPercent: 0,
+  //     delay: 0.3,
+  //   }
+  // )
+  // .fromTo(
+  //   '.map__link',
+  //   {
+  //     opacity: 0,
+  //     x: -40,
+  //   },
+  //   {
+  //     opacity: 1,
+  //     x: 0,
+  //     stagger: 0.1,
+  //     clearProps: 'all',
+  //   }
+  // )
 }
 
 const endAnim = () => {
   const mapSection = document.querySelector('.map')
-  const image = document.querySelector('.map__image')
-  const state = Flip.getState(image)
+  // const image = document.querySelector('.map__image')
+  // const state = Flip.getState(image)
 
   mapSection?.classList.remove('fixed')
 
-  Flip.from(state, {
-    duration: 0.3,
-    scale: true,
-    // absolute: true,
-  })
+  // Flip.from(state, {
+  //   duration: 0.3,
+  //   scale: true,
+  //   // absolute: true,
+  // })
 
-  gsap.fromTo(
-    '.map__content',
-    {
-      xPercent: 0,
-    },
-    {
-      xPercent: -100,
-    }
-  )
+  // gsap.fromTo(
+  //   '.map__content',
+  //   {
+  //     xPercent: 0,
+  //   },
+  //   {
+  //     xPercent: -100,
+  //   }
+  // )
 }
 
 const activeItem = ref(0)
@@ -200,8 +202,12 @@ watch(activeItem, (newValue, oldValue) => {
 })
 
 onMounted(() => {
+  gsap.set('.map__item:not(:first-child)', {
+    opacity: 0,
+  })
   document.querySelector('.map').style.height =
-    document.querySelector('.map__wrap')?.scrollHeight + 'px'
+    document.querySelector('.map')?.scrollHeight + 'px'
+
   ScrollTrigger.create({
     trigger: '.map',
     start: 'top center',
@@ -304,10 +310,9 @@ onMounted(() => {
   }
 }
 
-.map__wrap {
-  display: none;
-}
-
+// .map__wrap {
+//   display: none;
+// }
 .fixed .map__wrap {
   position: fixed;
   top: 0;
@@ -315,8 +320,13 @@ onMounted(() => {
   right: 0;
   bottom: 0;
   z-index: 1000;
+  opacity: 0.4;
+}
+.map__wrap {
   display: flex;
   flex-direction: column;
+  opacity: 0.1;
+  pointer-events: none;
 
   @media (min-width: 1200px) {
     display: grid;
