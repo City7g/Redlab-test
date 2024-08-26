@@ -9,9 +9,17 @@
 }
 
 .title-h2 {
-  font-size: 44px;
+  font-size: 30px;
   line-height: 1.2;
   font-weight: 400;
+
+  @media (min-width: 768px) {
+    font-size: 38px;
+  }
+
+  @media (min-width: 1400px) {
+    font-size: 44px;
+  }
 }
 
 .title-h6 {

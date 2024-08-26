@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import gsap from 'gsap'
+
+onMounted(() => {
+  gsap.to(
+    {},
+    {
+      // xPercent
+      opacity: 0,
+    }
+  )
+})
+</script>
+
 <template>
   <button class="btn">
     <span>Click</span>
