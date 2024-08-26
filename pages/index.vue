@@ -1,6 +1,7 @@
 <template>
   <main>
-    <SectionFirst />
-    <SectionCards />
+    <!-- <SectionFirst />
+    <SectionCards /> -->
+    <SectionMap />
   </main>
 </template>
