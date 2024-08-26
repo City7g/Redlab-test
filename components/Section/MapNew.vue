@@ -11,17 +11,25 @@ const anim = (action: string = 'add') => {
   section.value?.classList[action]('fixed')
 
   Flip.from(state, {
-    duration: 3,
+    duration: 0.5,
+    // simple: true,
+    // absolute: true,
     // prune: true,
-    // scale: true,
+    scale: true,
+    ease: 'sine.inOut',
+    // getVars: true,
   })
     .from('.some__dot', {
       opacity: 0,
       stagger: 0.2,
     })
-    .from('.some__menu', {
-      xPercent: -100,
-    })
+    .from(
+      '.some__menu',
+      {
+        xPercent: -100,
+      },
+      0.5
+    )
 }
 
 onMounted(() => {
@@ -129,7 +137,7 @@ onMounted(() => {
   bottom: 0;
   z-index: 10000;
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 375px 1fr;
   height: 100%;
   width: 100%;
 }
