@@ -3,33 +3,34 @@ import { gsap, ScrollTrigger, Flip } from 'gsap/all'
 
 const section = ref<HTMLDivElement | null>(null)
 const popup = ref<HTMLDivElement | null>(null)
-const img1 = ref<HTMLDivElement | null>(null)
 
 const anim = (action: string = 'add') => {
-  const state = Flip.getState(popup.value)
+  const state = Flip.getState(document.querySelector('.some__item img'))
 
   section.value?.classList[action]('fixed')
 
-  Flip.from(state, {
+  const tl = Flip.from(state, {
     duration: 0.5,
-    // simple: true,
+    simple: true,
+    onStart: () => {},
     // absolute: true,
     // prune: true,
-    scale: true,
-    ease: 'sine.inOut',
+    // scale: true,
+    // ease: 'sine.inOut',
     // getVars: true,
   })
-    .from('.some__dot', {
+  if (action === 'add') {
+    tl.from('.some__dot', {
       opacity: 0,
       stagger: 0.2,
-    })
-    .from(
+    }).from(
       '.some__menu',
       {
         xPercent: -100,
       },
       0.5
     )
+  }
 }
 
 onMounted(() => {
@@ -83,7 +84,6 @@ onMounted(() => {
 }
 
 .some__popup {
-  overflow: hidden;
   object-fit: contain;
 }
 
@@ -140,6 +140,7 @@ onMounted(() => {
   grid-template-columns: 375px 1fr;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .some__popup img {
