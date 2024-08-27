@@ -2,7 +2,6 @@
   <main>
     <SectionFirst />
     <SectionCards />
-    <!-- <SectionMap /> -->
-    <SectionMapNew />
+    <SectionMap />
   </main>
 </template>

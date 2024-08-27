@@ -92,89 +92,67 @@ const list = [
   },
 ]
 
-const startAnim = () => {
-  const mapSection = document.querySelector('.map')
-  const image = document.querySelector('.map__images')
+let isAnim = false
 
-  const state = Flip.getState('.map__image')
+const section = ref<HTMLDivElement | null>(null)
+const popup = ref<HTMLDivElement | null>(null)
 
-  mapSection?.classList.add('fixed')
+const activeTab = ref(list[0].id)
 
-  document.querySelector('.map__image')?.append('map__images')
+const anim = (action: string = 'add') => {
+  const state = Flip.getState(document.querySelector('.map__images'))
 
-  // Flip.fit('.map__img1', '.map__image img', {
-  //   scale: true,
-  // })
+  section.value?.classList[action]('fixed')
 
-  Flip.to(state, {
-    // targets: '.map__img1',
-    duration: 0.5,
-    scale: true,
+  const tl = Flip.from(state, {
+    duration: 1,
   })
-  // .fromTo(
-  //   '.map__content',
-  //   {
-  //     xPercent: -100,
-  //   },
-  //   {
-  //     xPercent: 0,
-  //     delay: 0.3,
-  //   }
-  // )
-  // .fromTo(
-  //   '.map__link',
-  //   {
-  //     opacity: 0,
-  //     x: -40,
-  //   },
-  //   {
-  //     opacity: 1,
-  //     x: 0,
-  //     stagger: 0.1,
-  //     clearProps: 'all',
-  //   }
-  // )
+
+  if (action === 'add') {
+    tl.from('.dot', {
+      opacity: 0,
+      stagger: 0.2,
+    })
+      .from(
+        '.map__info',
+        {
+          xPercent: -100,
+        },
+        0.5
+      )
+      .fromTo(
+        '.map__link-wrap',
+        {
+          x: -40,
+          alpha: 0,
+        },
+        {
+          x: 0,
+          alpha: 1,
+          stagger: 0.1,
+        },
+        0.8
+      )
+  }
 }
 
-const endAnim = () => {
-  const mapSection = document.querySelector('.map')
-  // const image = document.querySelector('.map__image')
-  // const state = Flip.getState(image)
-
-  mapSection?.classList.remove('fixed')
-
-  // Flip.from(state, {
-  //   duration: 0.3,
-  //   scale: true,
-  //   // absolute: true,
-  // })
-
-  // gsap.fromTo(
-  //   '.map__content',
-  //   {
-  //     xPercent: 0,
-  //   },
-  //   {
-  //     xPercent: -100,
-  //   }
-  // )
-}
-
-const activeItem = ref(0)
-
-watch(activeItem, (newValue, oldValue) => {
+watch(activeTab, (newValue, oldValue) => {
   const newItem = document.querySelectorAll('.map__item')[newValue]
   const oldItem = document.querySelectorAll('.map__item')[oldValue]
-  const tl = gsap.timeline()
+  const tl = gsap.timeline({
+    onStart: () => (isAnim = true),
+    onComplete: () => (isAnim = false),
+  })
 
   tl.set(oldItem, {
     zIndex: 1,
   })
-    .set(oldItem.querySelectorAll('.dot'), {
+    .set(oldItem.querySelectorAll('.map__dot'), {
       opacity: 0,
     })
     .set(newItem, {
       zIndex: 2,
+      display: 'block',
     })
     .fromTo(
       newItem,
@@ -189,7 +167,7 @@ watch(activeItem, (newValue, oldValue) => {
       }
     )
     .fromTo(
-      newItem.querySelectorAll('.dot'),
+      newItem.querySelectorAll('.map__dot'),
       {
         opacity: 0,
       },
@@ -199,137 +177,174 @@ watch(activeItem, (newValue, oldValue) => {
       },
       '+=.3'
     )
+    .set(oldItem, {
+      display: 'none',
+    })
 })
 
 onMounted(() => {
-  gsap.set('.map__item:not(:first-child)', {
-    opacity: 0,
-  })
-  document.querySelector('.map').style.height =
-    document.querySelector('.map')?.scrollHeight + 'px'
+  document.querySelector('.map__height').style.height =
+    document.querySelector('.map__height')?.scrollHeight + 'px'
 
   ScrollTrigger.create({
-    trigger: '.map',
-    start: 'top center',
-    end: 'bottom',
+    trigger: document.body,
+    start: 'bottom bottom+=150',
     onEnter: () => {
-      startAnim()
-      // document.querySelector('.map')?.classList.add('fixed')
+      anim()
     },
     onLeaveBack: () => {
-      endAnim()
-      // document.querySelector('.map')?.classList.remove('fixed')
+      anim('remove')
     },
   })
 })
 </script>
 
 <template>
-  <section class="map">
-    <div class="map__images">
-      <img src="/images/map/item-1.jpg" alt="" class="map__img1" />
-    </div>
-
-    <div class="map__wrap">
-      <div class="map__content">
-        <h3 class="title-h6 map__content-title">Как мы убираем</h3>
-        <ul>
-          <li
-            v-for="item in list"
-            :key="item.id"
-            @click="activeItem = item.id"
-            class="title-h2 map__link"
-            :class="{ active: activeItem === item.id }"
-          >
-            {{ item.title }}
-          </li>
-        </ul>
-      </div>
-      <div class="map__image">
-        <div v-for="item in list" :key="item.img" class="map__item">
-          <div class="map__dots-img">
-            <Dot
-              v-for="dot in item.dots"
-              :key="dot.text"
-              :style="{
-                top: dot.top + '%',
-                left: dot.left + '%',
-              }"
-              :text="dot.text"
-            />
-
-            <img
-              :src="`/images/map/item-${item.img}.jpg`"
-              alt=""
-              class="map__img"
-            />
+  <div class="map__height">
+    <div ref="section" class="map">
+      <div ref="popup" class="map__popup">
+        <div class="map__info">
+          <h3 class="title-h6 map__title">Как мы убираем</h3>
+          <div class="map__menu">
+            <div v-for="item in list" :key="item.id" class="map__link-wrap">
+              <p
+                @click="isAnim || (activeTab = item.id)"
+                class="title-h2 map__link"
+                :class="{ active: activeTab === item.id }"
+              >
+                {{ item.title }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="map__images">
+          <div class="map__items">
+            <template v-for="item in list" :key="item.id">
+              <div class="map__item">
+                <Dot
+                  v-for="dot in item.dots"
+                  :key="dot.text"
+                  :text="dot.text"
+                  :top="dot.top"
+                  :left="dot.left"
+                  class="map__dot"
+                />
+                <img
+                  ref="img2"
+                  :src="`/images/map/item-${item.img}.jpg`"
+                  alt=""
+                  class="map__img"
+                />
+              </div>
+            </template>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <style lang="scss">
-.map {
-  margin: 40px 16px;
+.map__height {
+  margin: 50px;
 
   @media (min-width: 1200px) {
-    margin: 75px 175px;
+    margin: 50px 75px;
   }
 }
 
-.map__wrap {
+.map > img {
+  width: 100%;
 }
 
-.map__content {
-  display: grid;
+.map__popup {
+  object-fit: contain;
+}
+
+.map__item {
+  position: relative;
+  height: 100%;
+}
+
+.map__dot {
+  display: none;
+}
+
+.fixed .map__dot {
+  display: block;
+}
+
+.map__info {
+  display: none;
+  padding: 25px 40px;
   background-color: $primary;
   color: #fff;
-  padding: 20px 16px;
 
-  @media (max-width: 1199px) {
-    flex-grow: 1;
-  }
-
-  @media (min-width: 1200px) {
-    padding: 20px 30px;
+  @media (min-width: 992px) {
     grid-template-rows: 1fr auto 1fr;
   }
-
-  // @media (max-width: 1199px) {
-  //   position: absolute;
-  //   left: 0;
-  //   top: 0;
-  //   bottom: 0;
-  //   width: 80%;
-  // }
 
   @media (min-width: 1400px) {
     padding: 35px 60px;
   }
 }
 
-// .map__wrap {
-//   display: none;
-// }
-.fixed .map__wrap {
+.fixed .map__info {
+  display: grid;
+}
+
+.map__link {
+  position: relative;
+  transition: 0.3s ease;
+  transition-property: color, transform;
+  color: rgba(#fff, 0.7);
+  padding: 11px 0;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &::before {
+    position: absolute;
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    content: '→';
+    color: inherit;
+    transition: 0.3s ease;
+    transition-property: opacity, transform;
+    opacity: 0;
+  }
+}
+
+.map__link.active {
+  position: relative;
+  font-style: italic;
+  transform: translateX(40px);
+
+  &::before {
+    opacity: 1;
+  }
+}
+
+.fixed .map__popup {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000;
-  opacity: 0.4;
-}
-.map__wrap {
-  display: flex;
-  flex-direction: column;
-  opacity: 0.1;
-  pointer-events: none;
+  z-index: 10000;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 
-  @media (min-width: 1200px) {
-    display: grid;
+  @media (max-width: 991px) {
+    grid-template-rows: 1fr 1fr;
+  }
+
+  @media (min-width: 992px) {
     grid-template-columns: 300px 1fr;
   }
 
@@ -338,76 +353,33 @@ onMounted(() => {
   }
 }
 
-// .map__image.fixed .map__img {
-//   width: 100%;
-//   height: 100%;
-// }
-
-.map__link {
-  padding: 12px 20px;
-  position: relative;
-  transition: 0.5s all ease;
-  color: rgba(#fff, 0.6);
-  cursor: pointer;
-
-  &.active,
-  &:hover {
-    transform: translateX(50px);
-    color: #fff;
-  }
-
-  &::before {
-    position: absolute;
-    top: 50%;
-    left: -30px;
-    transform: translateY(-50%);
-    color: rgba(#fff, 0);
-    transition: 0.5s all ease;
-    content: '→';
-  }
-
-  &.active::before,
-  &:hover::before {
-    color: #fff;
-  }
-}
-
-.map__image {
-  display: grid;
-  overflow: hidden;
-
-  & > * {
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
-  }
-}
-
-.map__item {
-  display: grid;
-  position: relative;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  & > * {
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
-  }
-}
-
-.map__dots {
-  // inset: 0;
-}
-
-.map__img {
+.map__popup img {
   display: block;
   width: 100%;
-  min-height: 100%;
-  height: auto;
-  // max-height: auto;
+  height: 100%;
   object-fit: cover;
 }
 
-.map__dots-img {
-  position: relative;
+.map__images,
+.map__items {
+  display: grid;
+  max-height: 100vh;
+
+  & > * {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
+}
+
+.fixed .map__items {
+  overflow: auto;
+}
+
+.map__item {
+  height: 100%;
+}
+
+.map__item:not(:first-child) {
+  display: none;
 }
 </style>
