@@ -11,7 +11,7 @@ onMounted(() => {
       gsap.to(banner.value, {
         scale: 1,
       })
-    } else if (document.querySelector('.some')?.classList.contains('fixed')) {
+    } else if (document.querySelector('.map')?.classList.contains('fixed')) {
       gsap.to(banner.value, {
         scale: 0,
         transformOrigin: 'bottom',
