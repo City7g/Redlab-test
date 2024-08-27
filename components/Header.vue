@@ -13,6 +13,18 @@ const togglePaintHeader = () => {
   isPaintHeader.value = window.scrollY > 5
 }
 
+const handleESC = (event) => {
+  if (event.key === 'Escape' || event.key === 'Esc') {
+    isMenuOpen.value = false
+  }
+}
+
+const handleClickOutside = (event) => {
+  if (!event.target.closest('.header')) {
+    isMenuOpen.value = false
+  }
+}
+
 watch(isMenuOpen, (newValue) => {
   document.body.style.overflow = newValue ? 'hidden' : ''
 })
@@ -20,8 +32,14 @@ watch(isMenuOpen, (newValue) => {
 onMounted(() => {
   togglePaintHeader()
   window.addEventListener('scroll', togglePaintHeader)
+  document.addEventListener('keydown', handleESC)
+  window.addEventListener('click', handleClickOutside)
 })
-onBeforeUnmount(() => window.removeEventListener('scroll', togglePaintHeader))
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', togglePaintHeader)
+  document.removeEventListener('keydown', handleESC)
+  window.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
@@ -126,8 +144,10 @@ onBeforeUnmount(() => window.removeEventListener('scroll', togglePaintHeader))
   transition: 0.3s color ease;
   cursor: pointer;
 
-  &:hover {
-    color: #5a30f0;
+  @media (pointer: fine) {
+    &:hover {
+      color: #5a30f0;
+    }
   }
 }
 
