@@ -23,6 +23,8 @@ onMounted(() => {
     }
   })
 
+  // oversol
+
   window.addEventListener('mousemove', (e) => {
     const bannerSize = banner.value?.getBoundingClientRect()!
     const distanceX = bannerSize?.left + bannerSize?.width / 2 - e.clientX

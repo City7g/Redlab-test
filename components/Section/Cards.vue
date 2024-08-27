@@ -40,12 +40,22 @@ onMounted(() => {
 <template>
   <section class="cards">
     <div v-for="item in list" :key="item.id" class="card">
-      <p class="text-subtitle card__text">{{ item.title }}</p>
-      <img
-        :src="`/images/card/item-${item.img}.png`"
-        alt=""
-        class="card__img"
-      />
+      <div class="card__front">
+        <p class="text-subtitle card__text">{{ item.title }}</p>
+        <img
+          :src="`/images/card/item-${item.img}.png`"
+          alt=""
+          class="card__img"
+        />
+      </div>
+
+      <div class="card__back">
+        <p class="text-article">
+          Не нужно тратить время, силы и ресурсы на разме- щение вакансий,
+          проведе- ние собеседований, про- верку кандидатов на должность
+          уборщицы. За счет больших объемов мы можем сделать это эффективнее.
+        </p>
+      </div>
     </div>
   </section>
 </template>
@@ -73,8 +83,40 @@ onMounted(() => {
   height: 328px;
   background-color: #f3f6fb;
   border-radius: 8px;
-  text-align: center;
   overflow: hidden;
+  transition: 0.3s ease;
+  transition-property: background-color, color;
+
+  // &:hover {
+  //   background-color: #5a30f0;
+  //   color: #fff;
+  // }
+}
+
+.card__front {
+  text-align: center;
+}
+
+.card__back {
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #5a30f0;
+  color: #fff;
+  transition: 0.5s all ease;
+  transform: translateY(100%);
+  border-radius: inherit;
+
+  @media (min-width: 1400px) {
+    padding: 30px;
+  }
+}
+
+.card:hover .card__back {
+  transform: translateY(0);
 }
 
 .card__img {
