@@ -19,7 +19,6 @@ input[role='switch'] {
   }
 
   &:checked::after {
-
     background: white;
     transform: translate(calc(-50% + 8px), -50%);
   }

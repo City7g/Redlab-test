@@ -277,7 +277,7 @@ onMounted(() => {
 .some__info {
   display: none;
   padding: 25px 40px;
-  background-color: #5a30f0;
+  background-color: $primary;
   color: #fff;
 
   @media (min-width: 992px) {

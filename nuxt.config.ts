@@ -4,6 +4,16 @@ export default defineNuxtConfig({
 
   // devtools: { enabled: true },
 
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/scss/helper/_colors.scss";',
+        },
+      },
+    },
+  },
+
   css: ['~/assets/scss/main.scss'],
 
   devtools: {

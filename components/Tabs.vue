@@ -38,7 +38,7 @@ const activeItem = ref(list[0])
 
 .tabs__item.active {
   color: #fff;
-  background-color: #5a30f0;
+  background-color: $primary;
 }
 
 .tabs__text {

@@ -284,7 +284,7 @@ onMounted(() => {
 
 .map__content {
   display: grid;
-  background-color: #5a30f0;
+  background-color: $primary;
   color: #fff;
   padding: 20px 16px;
 

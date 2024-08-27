@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
 
   @media (pointer: fine) {
     &:hover {
-      color: #5a30f0;
+      color: $primary;
     }
   }
 }

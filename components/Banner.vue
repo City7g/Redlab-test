@@ -79,7 +79,7 @@ onMounted(() => {
 .banner__block {
   width: 100%;
   height: 100%;
-  background-color: #5a30f0;
+  background-color: $primary;
   border-radius: 50%;
 }
 

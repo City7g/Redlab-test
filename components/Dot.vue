@@ -19,12 +19,12 @@ defineProps<{
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #5a30f0;
-  box-shadow: 0 0 0 10px rgba(#5a30f0, 0.2);
+  background-color: $primary;
+  box-shadow: 0 0 0 10px rgba($primary, 0.2);
   transition: 0.3s box-shadow ease;
 
   &:hover {
-    box-shadow: 0 0 0 0 rgba(#5a30f0, 0.2);
+    box-shadow: 0 0 0 0 rgba($primary, 0.2);
   }
 }
 

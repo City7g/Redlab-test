@@ -104,7 +104,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #5a30f0;
+  background-color: $primary;
   color: #fff;
   transition: 0.5s all ease;
   transform: translateY(100%);
@@ -127,11 +127,18 @@ onMounted(() => {
   bottom: 0;
   max-height: 60%;
   object-fit: contain;
+  transition: 0.3s ease;
+  transition-property: opacity, transform;
 
   @media (min-width: 1400px) {
     left: 55px;
     right: 55px;
     width: calc(100% - 110px);
   }
+}
+
+.card:hover .card__img {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
