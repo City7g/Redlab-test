@@ -360,6 +360,10 @@ onMounted(() => {
   object-fit: cover;
 }
 
+.map__images {
+  scrollbar-width: none;
+}
+
 .map__images,
 .map__items {
   display: grid;
