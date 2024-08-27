@@ -1,11 +1,13 @@
 <script setup lang="ts">
 defineProps<{
+  top: number
+  left: number
   text: string
 }>()
 </script>
 
 <template>
-  <div style="left: 20%; top: 40%" class="dot">
+  <div :style="{ top: top + '%', left: left + '%' }" class="dot">
     <div class="dot__close"></div>
     <p class="dot__text">{{ text }}</p>
   </div>
