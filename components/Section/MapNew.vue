@@ -92,6 +92,8 @@ const list = [
   },
 ]
 
+let isAnim = false
+
 const section = ref<HTMLDivElement | null>(null)
 const popup = ref<HTMLDivElement | null>(null)
 
@@ -118,11 +120,15 @@ const anim = (action: string = 'add') => {
         },
         0.5
       )
-      .from(
-        '.some__link',
+      .fromTo(
+        '.some__link-wrap',
         {
-          x: -100,
-          opacity: 0,
+          x: -40,
+          alpha: 0,
+        },
+        {
+          x: 0,
+          alpha: 1,
           stagger: 0.1,
         },
         0.8
@@ -133,7 +139,10 @@ const anim = (action: string = 'add') => {
 watch(activeTab, (newValue, oldValue) => {
   const newItem = document.querySelectorAll('.some__item')[newValue]
   const oldItem = document.querySelectorAll('.some__item')[oldValue]
-  const tl = gsap.timeline()
+  const tl = gsap.timeline({
+    onStart: () => (isAnim = true),
+    onComplete: () => (isAnim = false),
+  })
 
   tl.set(oldItem, {
     zIndex: 1,
@@ -174,11 +183,12 @@ watch(activeTab, (newValue, oldValue) => {
 })
 
 onMounted(() => {
+  document.querySelector('.some__height').style.height =
+    document.querySelector('.some__height')?.scrollHeight + 'px'
+
   ScrollTrigger.create({
-    trigger: section.value,
-    start: 'top center',
-    end: 'bottom',
-    markers: true,
+    trigger: document.body,
+    start: 'bottom bottom+=150',
     onEnter: () => {
       anim()
     },
@@ -190,42 +200,44 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="section" class="some">
-    <div ref="popup" class="some__popup">
-      <div class="some__info">
-        <h3 class="title-h6 some__title">Как мы убираем</h3>
-        <div class="some__menu">
-          <p
-            v-for="item in list"
-            :key="item.id"
-            @click="activeTab = item.id"
-            class="title-h2 some__link"
-            :class="{ active: activeTab === item.id }"
-          >
-            {{ item.title }}
-          </p>
-        </div>
-      </div>
-      <div class="some__images">
-        <div class="some__items">
-          <template v-for="item in list" :key="item.id">
-            <div class="some__item">
-              <Dot
-                v-for="dot in item.dots"
-                :key="dot.text"
-                :text="dot.text"
-                :top="dot.top"
-                :left="dot.left"
-                class="some__dot"
-              />
-              <img
-                ref="img2"
-                :src="`/images/map/item-${item.img}.jpg`"
-                alt=""
-                class="some__img"
-              />
+  <div class="some__height">
+    <div ref="section" class="some">
+      <div ref="popup" class="some__popup">
+        <div class="some__info">
+          <h3 class="title-h6 some__title">Как мы убираем</h3>
+          <div class="some__menu">
+            <div v-for="item in list" :key="item.id" class="some__link-wrap">
+              <p
+                @click="isAnim || (activeTab = item.id)"
+                class="title-h2 some__link"
+                :class="{ active: activeTab === item.id }"
+              >
+                {{ item.title }}
+              </p>
             </div>
-          </template>
+          </div>
+        </div>
+        <div class="some__images">
+          <div class="some__items">
+            <template v-for="item in list" :key="item.id">
+              <div class="some__item">
+                <Dot
+                  v-for="dot in item.dots"
+                  :key="dot.text"
+                  :text="dot.text"
+                  :top="dot.top"
+                  :left="dot.left"
+                  class="some__dot"
+                />
+                <img
+                  ref="img2"
+                  :src="`/images/map/item-${item.img}.jpg`"
+                  alt=""
+                  class="some__img"
+                />
+              </div>
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -233,8 +245,12 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-.some {
+.some__height {
   margin: 50px;
+
+  @media (min-width: 1200px) {
+    margin: 50px 75px;
+  }
 }
 
 .some > img {
@@ -260,10 +276,13 @@ onMounted(() => {
 
 .some__info {
   display: none;
-  grid-template-rows: 1fr auto 1fr;
   padding: 25px 40px;
   background-color: #5a30f0;
   color: #fff;
+
+  @media (min-width: 992px) {
+    grid-template-rows: 1fr auto 1fr;
+  }
 
   @media (min-width: 1400px) {
     padding: 35px 60px;
@@ -275,7 +294,9 @@ onMounted(() => {
 }
 
 .some__link {
-  transition: 0.3s color ease;
+  position: relative;
+  transition: 0.3s ease;
+  transition-property: color, transform;
   color: rgba(#fff, 0.7);
   padding: 11px 0;
   cursor: pointer;
@@ -283,13 +304,29 @@ onMounted(() => {
   &:hover {
     color: #fff;
   }
+
+  &::before {
+    position: absolute;
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    content: '→';
+    color: inherit;
+    transition: 0.3s ease;
+    transition-property: opacity, transform;
+    opacity: 0;
+  }
 }
 
-// .some__link.active {
-//   &::before {
-//     content: '1';
-//   }
-// }
+.some__link.active {
+  position: relative;
+  font-style: italic;
+  transform: translateX(40px);
+
+  &::before {
+    opacity: 1;
+  }
+}
 
 .fixed .some__popup {
   position: fixed;
@@ -299,10 +336,17 @@ onMounted(() => {
   bottom: 0;
   z-index: 10000;
   display: grid;
-  grid-template-columns: 300px 1fr;
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  @media (max-width: 991px) {
+    grid-template-rows: 1fr 1fr;
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: 300px 1fr;
+  }
 
   @media (min-width: 1400px) {
     grid-template-columns: 375px 1fr;
@@ -325,6 +369,10 @@ onMounted(() => {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
   }
+}
+
+.fixed .some__items {
+  overflow: auto;
 }
 
 .some__item {
