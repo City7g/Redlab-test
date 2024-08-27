@@ -307,7 +307,7 @@ onMounted(() => {
 
   &::before {
     position: absolute;
-    left: -40px;
+    left: -55px;
     top: 50%;
     transform: translateY(-50%);
     content: '→';
@@ -321,7 +321,7 @@ onMounted(() => {
 .map__link.active {
   position: relative;
   font-style: italic;
-  transform: translateX(40px);
+  transform: translateX(50px);
 
   &::before {
     opacity: 1;
